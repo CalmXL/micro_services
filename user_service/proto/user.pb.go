@@ -210,11 +210,11 @@ func (x *UserInfo) GetRole() int32 {
 }
 
 type PasswordVerify struct {
-	state           protoimpl.MessageState `protogen:"open.v1"`
-	RawPassword     string                 `protobuf:"bytes,1,opt,name=rawPassword,proto3" json:"rawPassword,omitempty"`
-	EncodedPassword string                 `protobuf:"bytes,2,opt,name=encodedPassword,proto3" json:"encodedPassword,omitempty"`
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int32                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	RawPassword   string                 `protobuf:"bytes,2,opt,name=rawPassword,proto3" json:"rawPassword,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *PasswordVerify) Reset() {
@@ -247,16 +247,16 @@ func (*PasswordVerify) Descriptor() ([]byte, []int) {
 	return file_user_proto_rawDescGZIP(), []int{3}
 }
 
+func (x *PasswordVerify) GetId() int32 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
 func (x *PasswordVerify) GetRawPassword() string {
 	if x != nil {
 		return x.RawPassword
-	}
-	return ""
-}
-
-func (x *PasswordVerify) GetEncodedPassword() string {
-	if x != nil {
-		return x.EncodedPassword
 	}
 	return ""
 }
@@ -325,12 +325,12 @@ const file_user_proto_rawDesc = "" +
 	"\bnickname\x18\x03 \x01(\tR\bnickname\x12\x1a\n" +
 	"\bpassword\x18\x04 \x01(\tR\bpassword\x12\x16\n" +
 	"\x06gender\x18\x05 \x01(\x05R\x06gender\x12\x12\n" +
-	"\x04role\x18\x06 \x01(\x05R\x04role\"\\\n" +
-	"\x0ePasswordVerify\x12 \n" +
-	"\vrawPassword\x18\x01 \x01(\tR\vrawPassword\x12(\n" +
-	"\x0fencodedPassword\x18\x02 \x01(\tR\x0fencodedPassword\",\n" +
+	"\x04role\x18\x06 \x01(\x05R\x04role\"B\n" +
+	"\x0ePasswordVerify\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x05R\x02id\x12 \n" +
+	"\vrawPassword\x18\x02 \x01(\tR\vrawPassword\",\n" +
 	"\x12PasswordVerifyPass\x12\x16\n" +
-	"\x06isPass\x18\x01 \x01(\bR\x06isPass2\xcc\x01\n" +
+	"\x06isPass\x18\x01 \x01(\bR\x06isPass2\xa0\x02\n" +
 	"\x04User\x12#\n" +
 	"\vGetUserList\x12\t.PageInfo\x1a\t.UserList\x12\x1f\n" +
 	"\aGetUser\x12\t.UserInfo\x1a\t.UserInfo\x12\"\n" +
@@ -338,7 +338,9 @@ const file_user_proto_rawDesc = "" +
 	"CreateUser\x12\t.UserInfo\x1a\t.UserInfo\x12\"\n" +
 	"\n" +
 	"UpdateUser\x12\t.UserInfo\x1a\t.UserInfo\x126\n" +
-	"\x0eVerifyPassword\x12\x0f.PasswordVerify\x1a\x13.PasswordVerifyPassB\n" +
+	"\x0eVerifyPassword\x12\x0f.PasswordVerify\x1a\x13.PasswordVerifyPass\x12*\n" +
+	"\x12UpdateMobileNumber\x12\t.UserInfo\x1a\t.UserInfo\x12&\n" +
+	"\x0eUpdatePassword\x12\t.UserInfo\x1a\t.UserInfoB\n" +
 	"Z\b./;protob\x06proto3"
 
 var (
@@ -368,13 +370,17 @@ var file_user_proto_depIdxs = []int32{
 	2, // 3: User.CreateUser:input_type -> UserInfo
 	2, // 4: User.UpdateUser:input_type -> UserInfo
 	3, // 5: User.VerifyPassword:input_type -> PasswordVerify
-	1, // 6: User.GetUserList:output_type -> UserList
-	2, // 7: User.GetUser:output_type -> UserInfo
-	2, // 8: User.CreateUser:output_type -> UserInfo
-	2, // 9: User.UpdateUser:output_type -> UserInfo
-	4, // 10: User.VerifyPassword:output_type -> PasswordVerifyPass
-	6, // [6:11] is the sub-list for method output_type
-	1, // [1:6] is the sub-list for method input_type
+	2, // 6: User.UpdateMobileNumber:input_type -> UserInfo
+	2, // 7: User.UpdatePassword:input_type -> UserInfo
+	1, // 8: User.GetUserList:output_type -> UserList
+	2, // 9: User.GetUser:output_type -> UserInfo
+	2, // 10: User.CreateUser:output_type -> UserInfo
+	2, // 11: User.UpdateUser:output_type -> UserInfo
+	4, // 12: User.VerifyPassword:output_type -> PasswordVerifyPass
+	2, // 13: User.UpdateMobileNumber:output_type -> UserInfo
+	2, // 14: User.UpdatePassword:output_type -> UserInfo
+	8, // [8:15] is the sub-list for method output_type
+	1, // [1:8] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
 	1, // [1:1] is the sub-list for extension extendee
 	0, // [0:1] is the sub-list for field type_name

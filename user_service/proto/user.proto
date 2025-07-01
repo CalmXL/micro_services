@@ -21,8 +21,8 @@ message UserInfo {
 }
 
 message PasswordVerify {
-  string rawPassword = 1;
-  string encodedPassword = 2;
+  int32 id = 1;
+  string rawPassword = 2;
 }
 
 message PasswordVerifyPass {
@@ -35,4 +35,6 @@ service User {
   rpc CreateUser (UserInfo) returns (UserInfo);
   rpc UpdateUser (UserInfo) returns (UserInfo);
   rpc VerifyPassword (PasswordVerify) returns (PasswordVerifyPass);
+  rpc UpdateMobileNumber (UserInfo) returns (UserInfo);
+  rpc UpdatePassword (UserInfo) returns (UserInfo);
 }

@@ -8,7 +8,6 @@ package proto
 
 import (
 	context "context"
-
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -20,11 +19,13 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	User_GetUserList_FullMethodName    = "/User/GetUserList"
-	User_GetUser_FullMethodName        = "/User/GetUser"
-	User_CreateUser_FullMethodName     = "/User/CreateUser"
-	User_UpdateUser_FullMethodName     = "/User/UpdateUser"
-	User_VerifyPassword_FullMethodName = "/User/VerifyPassword"
+	User_GetUserList_FullMethodName        = "/User/GetUserList"
+	User_GetUser_FullMethodName            = "/User/GetUser"
+	User_CreateUser_FullMethodName         = "/User/CreateUser"
+	User_UpdateUser_FullMethodName         = "/User/UpdateUser"
+	User_VerifyPassword_FullMethodName     = "/User/VerifyPassword"
+	User_UpdateMobileNumber_FullMethodName = "/User/UpdateMobileNumber"
+	User_UpdatePassword_FullMethodName     = "/User/UpdatePassword"
 )
 
 // UserClient is the client API for User service.
@@ -36,6 +37,8 @@ type UserClient interface {
 	CreateUser(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*UserInfo, error)
 	UpdateUser(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*UserInfo, error)
 	VerifyPassword(ctx context.Context, in *PasswordVerify, opts ...grpc.CallOption) (*PasswordVerifyPass, error)
+	UpdateMobileNumber(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*UserInfo, error)
+	UpdatePassword(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*UserInfo, error)
 }
 
 type userClient struct {
@@ -96,6 +99,26 @@ func (c *userClient) VerifyPassword(ctx context.Context, in *PasswordVerify, opt
 	return out, nil
 }
 
+func (c *userClient) UpdateMobileNumber(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*UserInfo, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UserInfo)
+	err := c.cc.Invoke(ctx, User_UpdateMobileNumber_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) UpdatePassword(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*UserInfo, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UserInfo)
+	err := c.cc.Invoke(ctx, User_UpdatePassword_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServer is the server API for User service.
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility.
@@ -105,6 +128,8 @@ type UserServer interface {
 	CreateUser(context.Context, *UserInfo) (*UserInfo, error)
 	UpdateUser(context.Context, *UserInfo) (*UserInfo, error)
 	VerifyPassword(context.Context, *PasswordVerify) (*PasswordVerifyPass, error)
+	UpdateMobileNumber(context.Context, *UserInfo) (*UserInfo, error)
+	UpdatePassword(context.Context, *UserInfo) (*UserInfo, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -129,6 +154,12 @@ func (UnimplementedUserServer) UpdateUser(context.Context, *UserInfo) (*UserInfo
 }
 func (UnimplementedUserServer) VerifyPassword(context.Context, *PasswordVerify) (*PasswordVerifyPass, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VerifyPassword not implemented")
+}
+func (UnimplementedUserServer) UpdateMobileNumber(context.Context, *UserInfo) (*UserInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateMobileNumber not implemented")
+}
+func (UnimplementedUserServer) UpdatePassword(context.Context, *UserInfo) (*UserInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdatePassword not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 func (UnimplementedUserServer) testEmbeddedByValue()              {}
@@ -241,6 +272,42 @@ func _User_VerifyPassword_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_UpdateMobileNumber_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UpdateMobileNumber(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_UpdateMobileNumber_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UpdateMobileNumber(ctx, req.(*UserInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_UpdatePassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UpdatePassword(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_UpdatePassword_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UpdatePassword(ctx, req.(*UserInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -267,6 +334,14 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "VerifyPassword",
 			Handler:    _User_VerifyPassword_Handler,
+		},
+		{
+			MethodName: "UpdateMobileNumber",
+			Handler:    _User_UpdateMobileNumber_Handler,
+		},
+		{
+			MethodName: "UpdatePassword",
+			Handler:    _User_UpdatePassword_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
