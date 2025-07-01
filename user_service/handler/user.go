@@ -2,6 +2,8 @@ package handler
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"micro_services/user_service/config"
 	"micro_services/user_service/model"
 	"micro_services/user_service/proto"
@@ -72,6 +74,7 @@ func (u *User) GetUser(c context.Context, r *proto.UserInfo) (*proto.UserInfo, e
 
 	return UserModelToResponse(*user), nil
 }
+
 func (u *User) CreateUser(c context.Context, r *proto.UserInfo) (*proto.UserInfo, error) {
 	/**
 	1. MobileNumber (unique), password 必传参数
@@ -83,8 +86,11 @@ func (u *User) CreateUser(c context.Context, r *proto.UserInfo) (*proto.UserInfo
 		MobileNumber: r.MobileNumber,
 	}).First(&user)
 
-	if result.Error != nil {
-		return nil, status.Errorf(codes.Internal, "%s", result.Error.Error())
+	fmt.Println(result)
+
+	//
+	if result.Error != nil && !errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return nil, status.Errorf(codes.Internal, "db error: %s", result.Error.Error())
 	}
 
 	if result.RowsAffected != 0 {
@@ -105,12 +111,17 @@ func (u *User) CreateUser(c context.Context, r *proto.UserInfo) (*proto.UserInfo
 
 	return resp, nil
 }
+
 func (u *User) UpdateUser(c context.Context, r *proto.UserInfo) (*proto.UserInfo, error) {
 
 	user, err := getUserByWhatever(u.DB, r, "ID")
 
 	if err != nil {
 		return nil, err
+	}
+
+	if r.MobileNumber != "" {
+		user.MobileNumber = r.MobileNumber
 	}
 
 	user.NickName = r.Nickname
@@ -124,11 +135,12 @@ func (u *User) UpdateUser(c context.Context, r *proto.UserInfo) (*proto.UserInfo
 
 	return UserModelToResponse(*user), nil
 }
+
 func (u *User) VerifyPassword(c context.Context, r *proto.PasswordVerify) (*proto.PasswordVerifyPass, error) {
 
 	var user model.User
 
-	result := u.DB.First(r.Id)
+	result := u.DB.First(&user, r.Id)
 
 	if result.Error != nil {
 		return nil, status.Errorf(codes.Internal, "%s", result.Error.Error())
@@ -138,6 +150,7 @@ func (u *User) VerifyPassword(c context.Context, r *proto.PasswordVerify) (*prot
 		return nil, status.Errorf(codes.NotFound, "user not found")
 	}
 
+	fmt.Println(result)
 	encodedPassword := user.Password
 
 	isPass := utils.VerifyPassword(r.RawPassword, encodedPassword)
@@ -148,7 +161,9 @@ func (u *User) VerifyPassword(c context.Context, r *proto.PasswordVerify) (*prot
 }
 
 func (u *User) UpdateMobileNumber(c context.Context, r *proto.UserInfo) (*proto.UserInfo, error) {
-	user, error := getUserByWhatever(u.DB, r, "MobileNumber")
+	user, error := getUserByWhatever(u.DB, r, "ID")
+
+	fmt.Println(user)
 
 	if error != nil {
 		return nil, error
@@ -196,7 +211,13 @@ func (u *User) UpdatePassword(c context.Context, r *proto.UserInfo) (*proto.User
 
 	user.Password = utils.GeneratePassWord(r.Password)
 
-	return nil, nil
+	result = u.DB.Save(&user)
+
+	if result.Error != nil {
+		return nil, status.Errorf(codes.Internal, "%s", result.Error.Error())
+	}
+
+	return UserModelToResponse(*user), nil
 }
 
 func getUserByWhatever(db *gorm.DB, r *proto.UserInfo, field string) (*model.User, error) {

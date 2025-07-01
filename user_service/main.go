@@ -16,7 +16,7 @@ func main() {
 		return
 	}
 
-	gServer, listener, err := utils.GrpcServer(config.Port, nil)
+	gServer, listener, err := utils.GrpcServer(*config.IP, *config.PORT, nil)
 
 	if err != nil {
 		log.Fatalf("Failed to start gPRC server: %v", err)
