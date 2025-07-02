@@ -184,7 +184,7 @@ func (u *User) UpdateMobileNumber(c context.Context, r *proto.UserInfo) (*proto.
 	result := u.DB.Save(&user)
 
 	if result.Error != nil {
-		return nil, status.Errorf(codes.Internal, result.Error.Error())
+		return nil, status.Errorf(codes.Internal, "%s", result.Error.Error())
 	}
 
 	resp := UserModelToResponse(*user)
