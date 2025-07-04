@@ -8,7 +8,12 @@ import (
 	"github.com/anaskhan96/go-password-encoder"
 )
 
-var opts = &password.Options{16, 100, 32, md5.New}
+var opts = &password.Options{
+	SaltLen:      16,
+	Iterations:   100,
+	KeyLen:       32,
+	HashFunction: md5.New,
+}
 
 func GeneratePassWord(rawPassword string) string {
 	salt, encodedPwd := password.Encode(rawPassword, opts)

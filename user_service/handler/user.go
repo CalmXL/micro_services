@@ -17,6 +17,7 @@ import (
 
 type User struct {
 	DB *gorm.DB
+	// 实现 gRPC 服务接口的部分默认行为，避免未实现方法导致的编译错误
 	proto.UnimplementedUserServer
 }
 
@@ -51,6 +52,7 @@ func (u *User) GetUserList(c context.Context, r *proto.PageInfo) (*proto.UserLis
 
 	return resp, nil
 }
+
 func (u *User) GetUser(c context.Context, r *proto.UserInfo) (*proto.UserInfo, error) {
 	/**
 	id,
