@@ -31,7 +31,8 @@ message PasswordVerifyPass {
 
 service User {
   rpc GetUserList (PageInfo) returns (UserList);
-  rpc GetUser (UserInfo) returns (UserInfo); 
+  rpc GetUserById (UserInfo) returns (UserInfo); 
+  rpc GetUserByMobileNumber (UserInfo) returns (UserInfo);
   rpc CreateUser (UserInfo) returns (UserInfo);
   rpc UpdateUser (UserInfo) returns (UserInfo);
   rpc VerifyPassword (PasswordVerify) returns (PasswordVerifyPass);

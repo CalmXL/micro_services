@@ -53,22 +53,25 @@ func (u *User) GetUserList(c context.Context, r *proto.PageInfo) (*proto.UserLis
 	return resp, nil
 }
 
-func (u *User) GetUser(c context.Context, r *proto.UserInfo) (*proto.UserInfo, error) {
-	/**
-	id,
-	mobileNumber
-	*/
+func (u *User) GetUserById(c context.Context, r *proto.UserInfo) (*proto.UserInfo, error) {
 
 	var user *model.User
 	var err error
 
-	if r.Id > 0 {
-		user, err = getUserByWhatever(u.DB, r, "ID")
+	user, err = getUserByWhatever(u.DB, r, "ID")
+
+	if err != nil {
+		return nil, err
 	}
 
-	if r.MobileNumber != "" {
-		user, err = getUserByWhatever(u.DB, r, "MobileNumber")
-	}
+	return UserModelToResponse(*user), nil
+}
+
+func (u *User) GetUserByMobileNumber(c context.Context, r *proto.UserInfo) (*proto.UserInfo, error) {
+	var user *model.User
+	var err error
+
+	user, err = getUserByWhatever(u.DB, r, "ID")
 
 	if err != nil {
 		return nil, err
